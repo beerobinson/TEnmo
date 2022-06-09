@@ -88,7 +88,7 @@ public class App {
 	private void viewCurrentBalance() {
         AccountService accountService = new AccountService();
         Long userId = Long.valueOf(1001);
-        accountService.getBalance(userId);
+        accountService.getBalance(userId, currentUser);
 		
 	}
 

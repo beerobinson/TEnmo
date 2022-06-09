@@ -1,6 +1,10 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -9,40 +13,34 @@ import java.math.BigDecimal;
 public class JdbcAccountDao implements AccountDao{
 
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
 
  @Override
-    public BigDecimal getBalance(Long userId){
-        String sql = "select balance from account where user_id = ?;";
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
-        return balance;
+    public Account getBalance(Long userId){
+     String sql = "select balance from account where user_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
 
+
+
+
+     if (results.next()) {
+         Account account = mapRowToAccount(results);
+         return account;
+     } return null;
+
+     }
+
+
+    private Account mapRowToAccount(SqlRowSet rowSet) {
+        Account account = new Account();
+        account.setAccountId(rowSet.getLong("account_id"));
+        account.setUserId(rowSet.getLong("user_id"));
+        account.setBalance(rowSet.getBigDecimal("balance"));
+        return account;
     }
 
-
-
-
-    /*private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
-    private JdbcTemplate jdbcTemplate;
-
-    public JdbcUserDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @Override
-    public int findIdByUsername(String username) {
-        String sql = "SELECT user_id FROM tenmo_user WHERE username ILIKE ?;";
-        Integer id = jdbcTemplate.queryForObject(sql, Integer.class, username);
-        if (id != null) {
-            return id;
-        } else {
-            return -1;
-        }*/
 
     }
 
