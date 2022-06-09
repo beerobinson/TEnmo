@@ -12,18 +12,18 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("permitAll")   //FIX THIS! You need to authenticate!
+@PreAuthorize("isAuthenticated()")
 public class AccountController {
 
 
-    private UserDao dao;
-    private String isAuthenticated;
     @Autowired
     JdbcAccountDao AccountDao;
+    @Autowired
+    private UserDao dao;
 
-    //Get User Balance
 
 
+    //If the authenticated user hits user/id, return an account object of the user ID.
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public Account getBalance(@PathVariable long userId){
         Account account = AccountDao.getBalance(userId);

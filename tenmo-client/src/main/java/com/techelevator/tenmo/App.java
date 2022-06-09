@@ -86,9 +86,9 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
+        //Call getbalance from the accountservice, print result
         AccountService accountService = new AccountService();
-        Long userId = Long.valueOf(1001);
-        accountService.getBalance(userId, currentUser);
+        System.out.println(accountService.getBalance(currentUser));
 		
 	}
 
