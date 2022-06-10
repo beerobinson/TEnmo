@@ -28,7 +28,6 @@ public class AccountController {
     public Account getBalance(@PathVariable long userId){
         Account account = AccountDao.getBalance(userId);
         return account;
-
     }
 
 }
