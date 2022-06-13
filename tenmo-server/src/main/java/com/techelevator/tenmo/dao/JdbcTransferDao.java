@@ -66,11 +66,11 @@ public class JdbcTransferDao implements TransferDao{
     private void recordTransfer(long accountFrom, long accountTo, BigDecimal amount){
         long defaultTransferStatus = 2;
         long defaultApprovalStatus = 2;
-        //TRANSFER USES ACCOUNT ID, NOT USER ID!!!!
-        //YOU NEED TO GET THEM BECAUSE USER IDS DON"T WORK HERE!
+
         String sql = "Insert into transfer" +
                 "(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
                 "values (?,?,?,?,?);";
+
         jdbcTemplate.update(sql, defaultApprovalStatus, defaultTransferStatus,accountFrom,accountTo,amount);
     }
 
