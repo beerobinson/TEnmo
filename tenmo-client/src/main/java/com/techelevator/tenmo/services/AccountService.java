@@ -43,7 +43,7 @@ public class AccountService {
         String token = user.getToken();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        //headers.setContentType(MediaType.APPLICATION_JSON);
+        //headers.setContentType(MediaType.APPLICATION_JSON); <---This breaks it!
         HttpEntity entity = new HttpEntity<>(headers);
         return entity;
 
