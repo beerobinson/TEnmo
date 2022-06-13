@@ -10,6 +10,10 @@ public interface TransferDao {
 
     public List<Transfer> transferList(Long userId);
 
-    public void makeTransfer(Long fromUserId, long toUserId, BigDecimal amount);
+    public void makeTransfer(long fromUserId, long toUserId, BigDecimal amount);
+
+    public void recordTransfer(long accountFrom, long accountTo, BigDecimal amount);
+
+    public Transfer getTransferByTransferId(long transferId);
 
 }

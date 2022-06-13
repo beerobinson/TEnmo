@@ -17,21 +17,27 @@ public class JdbcTransferDao implements TransferDao{
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
+    //Query database for a list of transfers based on Account ID.
     @Override
     public List<Transfer> transferList(Long userId){
+        //Pull the user's account ID:
+        long accountId = getAccountIdFromUserId(userId);
+
+        //Query for transfers of the User's account ID
         List<Transfer> listOfTransfers = new ArrayList<>();
-        String sql = "select * from transfer where account_from = ?;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        String sql = "select * from transfer where account_from = ? OR account_to = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId, accountId);
 
         while (results.next()) {
-            Transfer transfer = mapRowToAccount(results);
+            Transfer transfer = mapRowToTransfer(results);
             listOfTransfers.add(transfer);
         }
         return listOfTransfers;
     }
 
     @Override
-    public void makeTransfer(Long fromUserId, long toUserId, BigDecimal amount){
+    public void makeTransfer(long fromUserId, long toUserId, BigDecimal amount){
         BigDecimal fromBalance ;
         BigDecimal toBalance;
 
@@ -47,27 +53,54 @@ public class JdbcTransferDao implements TransferDao{
         toBalance = toBalance.add(amount);
         updateBalance(toUserId,toBalance);
 
-        //GET ACCOUNT IDS FOR FROMACCOUNTID TO ACCOUNTID
+        //pull the account_ID of fromUserid
+        long fromAccountId = getAccountIdFromUserId(fromUserId);
+
+        //pull the account_ID ot toUserId
+        long toAccountId = getAccountIdFromUserId(toUserId);
 
         //record the transfer
-        recordTransfer(fromUserId,toUserId,amount);
+        recordTransfer(fromAccountId,toAccountId,amount);
     }
 
-    private void recordTransfer(long accountFrom, long accountTo, BigDecimal amount){
+    @Override
+    public void recordTransfer(long accountFrom, long accountTo, BigDecimal amount){
         long defaultTransferStatus = 2;
         long defaultApprovalStatus = 2;
-        //TRANSFER USES ACCOUNT ID, NOT USER ID!!!!
-        //YOU NEED TO GET THEM BECAUSE USER IDS DON"T WORK HERE!
+
         String sql = "Insert into transfer" +
                 "(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
                 "values (?,?,?,?,?);";
+
         jdbcTemplate.update(sql, defaultApprovalStatus, defaultTransferStatus,accountFrom,accountTo,amount);
     }
 
 
+    private long getAccountIdFromUserId(long userId){
+        long accountId;
+        String sql = "select account_id from account where user_id=?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        if (results.next()){
+            accountId=results.getLong("account_id");
+        } else return 0;
+
+        return accountId;
+    }
+
+    @Override
+    public Transfer getTransferByTransferId(long transferId){
+        Transfer transfer = new Transfer();
+        String sql = "select * from transfer where transfer_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        if (results.next()){
+            transfer = mapRowToTransfer(results);
+        } else return null;
+        return transfer;
+    }
+
     private BigDecimal getAccountBalanceByUserId(long userId){
         BigDecimal balance;
-        String sql = "select balance from account where account_from = ?;";
+        String sql = "select balance from account where user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         if (results.next()){
             balance = results.getBigDecimal("amount");
@@ -75,7 +108,7 @@ public class JdbcTransferDao implements TransferDao{
         return balance;
     }
 
-    private void updateBalance(Long userId, BigDecimal balance){
+    private void updateBalance(long userId, BigDecimal balance){
         String sql = "Update account" +
                 "SET balance = ?" +
                 "WHERE" +
@@ -84,8 +117,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
 
-
-    private Transfer mapRowToAccount(SqlRowSet rowSet){
+    private Transfer mapRowToTransfer(SqlRowSet rowSet){
         Transfer transfer = new Transfer();
         transfer.setTransferId(rowSet.getLong("transfer_id"));
         transfer.setTransferTypeId(rowSet.getLong("transfer_type_id"));
