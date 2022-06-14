@@ -33,7 +33,7 @@ public class TransferController {
         dao.makeTransfer(transfer, userId);
     }
 
-    @RequestMapping(value = "/transfer/{transferId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/transferid/{transferId}", method = RequestMethod.GET)
     public Transfer getTransferById(@PathVariable long transferId) {
         return dao.getTransferByTransferId(transferId);
     }
