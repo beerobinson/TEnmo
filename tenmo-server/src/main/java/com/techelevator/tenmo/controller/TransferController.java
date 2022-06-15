@@ -28,18 +28,12 @@ public class TransferController {
     }
 
     //If the authenticated user hits transfers/id, with a POST, add transfer to list
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public void createTransfer(@RequestBody Transfer transfer) {
-       //IM HAVING ISSUES BECAUSE OPF USERID/ACCOUNTID CONFUSION.
-
-        long fromUserId = transfer.getAccountFrom();
-       long toUserId = transfer.getAccountTo();
-       BigDecimal amount = transfer.getAmount();
-        dao.makeTransfer(fromUserId, toUserId, amount);
-
+    @RequestMapping(value = "/{userId}", method = RequestMethod.POST)
+    public void createTransfer(@RequestBody Transfer transfer, @PathVariable Long userId) {
+        dao.makeTransfer(transfer, userId);
     }
 
-    @RequestMapping(value = "/transfer/{transferId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/transferid/{transferId}", method = RequestMethod.GET)
     public Transfer getTransferById(@PathVariable long transferId) {
         return dao.getTransferByTransferId(transferId);
     }
