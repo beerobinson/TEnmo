@@ -37,6 +37,19 @@ public class AccountService {
         return account.getBalance();
     }
 
+    public Account getAccount(AuthenticatedUser user) {
+        //Pull user data object and return the balance of the current user
+        Account account = new Account();
+
+        try {
+            //account = restTemplate.getForObject(API_BASE_URL + user.getUser().getId(), Account.class, HttpMethod.GET, authHttp(user));
+            account = restTemplate.exchange(API_BASE_URL + user.getUser().getId(),HttpMethod.GET, authHttp(user), Account.class).getBody();
+        } catch (RestClientException e) {
+            System.out.println("Exception " + e);
+        }
+
+        return account;
+    }
 
     private HttpEntity authHttp(AuthenticatedUser user) {
         //Generate an entity with the User's Token

@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transfers")
-//@PreAuthorize("isAuthenticated()")  FIX THIS!
+@PreAuthorize("isAuthenticated()")
 public class TransferController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class TransferController {
     //If the authenticated user hits transfers/id with a GET, return a List of transfers
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public List<Transfer> transferList(@PathVariable long userId) {
-        List<com.techelevator.tenmo.model.Transfer> tList = dao.transferList(userId);
+        List<Transfer> tList = dao.transferList(userId);
         return tList;
     }
 
