@@ -1,10 +1,16 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class App {
 
@@ -76,6 +82,8 @@ public class App {
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
+            } else if (menuSelection == 6) {
+                getTransferById();
             } else if (menuSelection == 0) {
                 continue;
             } else {
@@ -94,10 +102,37 @@ public class App {
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		System.out.println("View Transfer History:");
+        TransferService transferService = new TransferService();
+        List<Transfer> transferList = transferService.getUserTransfers(currentUser);
+
+        System.out.println(transferList.size() + " transfers");
+
+        for (Transfer transfer:transferList){
+            //Exception in thread "main" java.lang.ClassCastException
+            System.out.println(transfer.getTransferId());
+            //System.out.println(transfer.getTransferId() + " | " + transfer.getAccountFrom() + " | " + transfer.getAccountTo() + " | " + transfer.getAmount());
+        }
+
 	}
 
-	private void viewPendingRequests() {
+	private void getTransferById(){
+        //Pull a transfer based on its specific transfer ID
+        Scanner inputObject = new Scanner(System.in);
+        TransferService transferService = new TransferService();
+        System.out.println("Please enter the ID of the Transfer you wish to view:");
+
+
+       try {
+           long transferId=inputObject.nextLong();
+           Transfer transfer = transferService.getTransferByTransferId(currentUser, transferId);
+           System.out.println(transfer.getAmount());
+       } catch (Exception e){
+           System.out.println("No, it's broken. " + e);
+       }
+    }
+
+    private void viewPendingRequests() {
 		// TODO Auto-generated method stub
 		
 	}

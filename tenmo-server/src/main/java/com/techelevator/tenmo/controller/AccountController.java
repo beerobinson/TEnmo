@@ -25,7 +25,7 @@ public class AccountController {
 
 
     //If the authenticated user hits user/id, return an account object of the user ID.
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public Account getBalance(@PathVariable long userId){
         Account account = AccountDao.getBalance(userId);
         return account;
