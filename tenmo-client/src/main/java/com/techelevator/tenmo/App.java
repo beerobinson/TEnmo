@@ -1,12 +1,10 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.ListUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -144,7 +142,16 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
         TransferService transferService = new TransferService();
+        ListUserService listUserService = new ListUserService();
         Scanner inputObject = new Scanner(System.in);
+
+        ListUser[] listOfUsers = listUserService.getListUsers(currentUser);
+
+        for (ListUser user : listOfUsers){
+            System.out.println("Username: " + user.getUserName() + "    | Account ID: " + user.getAccountId());
+        }
+
+
 
         System.out.println("Please enter an account to send to:");
         long toAccountId = inputObject.nextLong();
