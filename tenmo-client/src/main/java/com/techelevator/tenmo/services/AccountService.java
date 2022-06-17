@@ -28,10 +28,9 @@ public class AccountService {
         Account account = new Account();
 
         try {
-           //account = restTemplate.getForObject(API_BASE_URL + user.getUser().getId(), Account.class, HttpMethod.GET, authHttp(user));
             account = restTemplate.exchange(API_BASE_URL + user.getUser().getId(),HttpMethod.GET, authHttp(user), Account.class).getBody();
         } catch (RestClientException e) {
-            System.out.println("Exception " + e);
+            System.err.println("Error getting balance.");
         }
 
         return account.getBalance();
@@ -45,7 +44,7 @@ public class AccountService {
             //account = restTemplate.getForObject(API_BASE_URL + user.getUser().getId(), Account.class, HttpMethod.GET, authHttp(user));
             account = restTemplate.exchange(API_BASE_URL + user.getUser().getId(),HttpMethod.GET, authHttp(user), Account.class).getBody();
         } catch (RestClientException e) {
-            System.out.println("Exception " + e);
+            System.err.println("Error getting account info/");
         }
 
         return account;

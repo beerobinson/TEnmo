@@ -19,7 +19,7 @@ public class TransferService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Transfer[] getUserTransfers(AuthenticatedUser user){
-
+        //Return a list of all of the user's transfers
         Transfer[] transferList = null;
 
         try {
@@ -32,14 +32,13 @@ public class TransferService {
     }
 
     public Transfer getTransferByTransferId(AuthenticatedUser user, long transferId){
+        //Get Transfer by specified transfer ID
         Transfer transfer = new Transfer();
-
         try {
             transfer = restTemplate.exchange(API_BASE_URL + "transferid/" + transferId, HttpMethod.GET, authHttp(user), Transfer.class).getBody();
         } catch (RestClientException e) {
             System.out.println("Exception " + e);
         }
-
         return transfer;
     }
 
@@ -76,10 +75,10 @@ public class TransferService {
                         //Post Transaction if funds are sufficient
                         try {
                             restTemplate.exchange(API_BASE_URL + userId, HttpMethod.POST, entity, Transfer.class).getBody();
+                            System.out.println("Transaction Successful!");
                         } catch (RestClientException e) {
-                            System.out.println("Exception " + e);
+                            System.err.println("That does not appear to be a valid account - TRANSACTION FAILED");
                         }
-                        System.out.println("Transaction Successful!");
 
                     } else System.err.println("Insufficient funds! - TRANSACTION FAILED");
                 } else System.err.println("Cannot send 0 or less than zero dollars! - TRANSACTION FAILED");

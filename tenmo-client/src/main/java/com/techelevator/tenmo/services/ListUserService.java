@@ -20,13 +20,13 @@ public class ListUserService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ListUser[] getListUsers(AuthenticatedUser user){
-
+        //Generates a list of Users and Account IDs.
         ListUser[] listUsers = null;
 
         try {
             listUsers = restTemplate.exchange(API_BASE_URL, HttpMethod.GET, authHttp(user), ListUser[].class).getBody();
         } catch (RestClientException e) {
-            System.out.println("Exception " + e);
+            System.err.println("Error Accessing User List");
         }
 
         return listUsers;

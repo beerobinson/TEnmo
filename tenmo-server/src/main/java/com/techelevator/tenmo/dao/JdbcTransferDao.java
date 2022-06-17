@@ -31,6 +31,8 @@ public class JdbcTransferDao implements TransferDao{
 
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
+            transfer.setFromUserName(getUserNameFromAccountId(transfer.getAccountFrom()));
+            transfer.setToUserName(getUserNameFromAccountId(transfer.getAccountTo()));
             listOfTransfers.add(transfer);
         }
         return listOfTransfers;
@@ -102,6 +104,19 @@ public class JdbcTransferDao implements TransferDao{
         return userId;
     }
 
+    private String getUserNameFromAccountId(long accountId) {
+        long userId = getUserIdFromAccountId(accountId);
+
+        String userName;
+        String sql = "select username from tenmo_user where user_id=?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        if (results.next()) {
+            userName = results.getString("username");
+        } else return null;
+
+        return userName;
+    }
+
     @Override
     public Transfer getTransferByTransferId(long transferId){
         Transfer transfer = new Transfer();
@@ -109,6 +124,8 @@ public class JdbcTransferDao implements TransferDao{
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()){
             transfer = mapRowToTransfer(results);
+            transfer.setFromUserName(getUserNameFromAccountId(transfer.getAccountFrom()));
+            transfer.setToUserName(getUserNameFromAccountId(transfer.getAccountTo()));
         } else return null;
         return transfer;
     }
