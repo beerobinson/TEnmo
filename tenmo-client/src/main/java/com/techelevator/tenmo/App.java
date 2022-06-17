@@ -8,6 +8,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -104,14 +105,15 @@ public class App {
 		// TODO Auto-generated method stub
 		System.out.println("View Transfer History:");
         TransferService transferService = new TransferService();
-        List<Transfer> transferList = transferService.getUserTransfers(currentUser);
+        //Declare arraylist?
+        Transfer[] transferList = transferService.getUserTransfers(currentUser);
 
-        System.out.println(transferList.size() + " transfers");
+        //System.out.println(transferList.size() + " transfers");
 
         for (Transfer transfer:transferList){
             //Exception in thread "main" java.lang.ClassCastException
-            System.out.println(transfer.getTransferId());
-            //System.out.println(transfer.getTransferId() + " | " + transfer.getAccountFrom() + " | " + transfer.getAccountTo() + " | " + transfer.getAmount());
+
+            System.out.println("Transfer ID: " + transfer.getTransferId() + " | Transfer From Account#: " + transfer.getAccountFrom() + " | Transfer to Account#: " + transfer.getAccountTo() + " | Amount to Transfer: $" + transfer.getAmount());
         }
 
 	}
@@ -126,7 +128,9 @@ public class App {
        try {
            long transferId=inputObject.nextLong();
            Transfer transfer = transferService.getTransferByTransferId(currentUser, transferId);
-           System.out.println(transfer.getAmount());
+           System.out.println("Transfer ID: " + transfer.getTransferId());
+           System.out.println("Transfer From Account#: " + transfer.getAccountFrom() + " | Transfer to Account#: " + transfer.getAccountTo() + " | Amount to Transfer: $" + transfer.getAmount());
+
        } catch (Exception e){
            System.out.println("No, it's broken. " + e);
        }
@@ -139,6 +143,18 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+        TransferService transferService = new TransferService();
+        Scanner inputObject = new Scanner(System.in);
+
+        System.out.println("Please enter an account to send to:");
+        long toAccountId = inputObject.nextLong();
+        System.out.println("Please enter an amount of money to send");
+        long amountLong = inputObject.nextLong();
+        BigDecimal amount = new BigDecimal(amountLong);
+
+        transferService.makeTransfer(currentUser,toAccountId,amount);
+
+
 		
 	}
 
