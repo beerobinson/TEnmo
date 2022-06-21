@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/listusers")
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class ListUserController {
 
     @Autowired

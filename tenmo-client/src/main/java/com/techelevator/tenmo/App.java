@@ -76,13 +76,9 @@ public class App {
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
-                viewPendingRequests();
+                getTransferById();
             } else if (menuSelection == 4) {
                 sendBucks();
-            } else if (menuSelection == 5) {
-                requestBucks();
-            } else if (menuSelection == 6) {
-                getTransferById();
             } else if (menuSelection == 0) {
                 continue;
             } else {
@@ -111,7 +107,7 @@ public class App {
         for (Transfer transfer:transferList){
             //Exception in thread "main" java.lang.ClassCastException
 
-            System.out.println("Transfer ID: " + transfer.getTransferId() + " | Transfer From Account#: " + transfer.getAccountFrom() + " | Transfer to Account#: " + transfer.getAccountTo() + " | Amount to Transfer: $" + transfer.getAmount());
+            System.out.println("Transfer ID: " + transfer.getTransferId() + " | Transfer From: " + transfer.getFromUserName() + " | Transfer to Account: " + transfer.getToUserName() + " | Amount to Transfer: $" + transfer.getAmount());
         }
 
 	}
@@ -127,7 +123,7 @@ public class App {
            long transferId=inputObject.nextLong();
            Transfer transfer = transferService.getTransferByTransferId(currentUser, transferId);
            System.out.println("Transfer ID: " + transfer.getTransferId());
-           System.out.println("Transfer From Account#: " + transfer.getAccountFrom() + " | Transfer to Account#: " + transfer.getAccountTo() + " | Amount to Transfer: $" + transfer.getAmount());
+           System.out.println("Transfer From: " + transfer.getFromUserName() + " | Transfer to Account#: " + transfer.getToUserName() + " | Amount to Transfer: $" + transfer.getAmount());
 
        } catch (Exception e){
            System.out.println("No, it's broken. " + e);
@@ -156,8 +152,7 @@ public class App {
         System.out.println("Please enter an account to send to:");
         long toAccountId = inputObject.nextLong();
         System.out.println("Please enter an amount of money to send");
-        long amountLong = inputObject.nextLong();
-        BigDecimal amount = new BigDecimal(amountLong);
+        BigDecimal amount = inputObject.nextBigDecimal();
 
         transferService.makeTransfer(currentUser,toAccountId,amount);
 
